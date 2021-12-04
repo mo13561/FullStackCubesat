@@ -1,0 +1,63 @@
+{% extends 'dataView/layout.html' %}
+
+{% block title %}
+    View live data
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        function doSomething() {
+            var d = new Date(),
+            h = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), (d.getMinutes() - (d.getMinutes() % 15)) + 15, 0, 0),
+            e = h - d;
+            window.setTimeout(doSomething, e);
+            alert("Will update values here using ajax");
+        }
+        doSomething();
+        document.querySelectorAll(".showSectionDiv").forEach((button) => {
+            button.onclick = () => {
+                input_name = button.dataset.input;
+                document.querySelectorAll(".moreInfoDiv").forEach((div) => {
+                    div.style.display = "none";
+                    if(div.dataset.input == input_name){
+                        div.style.display = "block";
+                    }
+                });
+            };
+        });
+    });
+</script>
+    <style>
+    .showSectionDiv{
+        background-color: #311432;
+        color:white;
+        border-radius:25px;
+    }
+
+    .moreInfoDiv{
+        display: none;
+    }
+</style>
+{% endblock %}
+
+
+{% block body %}
+    <p>https://help.tableau.com/current/pro/desktop/en-us/embed.htm - keep tables?<br/>Nvm use react js instead - requires JSON setup</p>
+    {% for input in input_array %}
+        <div class="col-8">
+            <button class="showSectionDiv btn btn-primary" data-input="{{input.name}}">{{input.name}} | {{input.value}}</button>
+            <div data-input="{{input.name}}" class="moreInfoDiv">
+                <!--Insert table, analysis etc.-->
+                Name: {{input.name}}
+                Value: {{input.value}}
+            </div>
+        </div>
+        <br/><br/>
+    {% empty %}
+        <h1>Something went wrong. No live info available at this time.</h1>
+    {% endfor %}
+
+
+
+{% endblock %}
